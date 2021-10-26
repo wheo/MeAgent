@@ -1,0 +1,111 @@
+﻿<Window x:Class="MeAgent.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MeAgent"
+        xmlns:model="clr-namespace:MeAgent.model"
+        mc:Ignorable="d"
+        Title="MeAgent" Height="1000" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="5*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="6*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="btnUpload" Content="알람업로드" Margin="10" Click="btnUpload_Click"></Button>
+                <TextBlock Text="알람 파일명" Margin="10,15,0,0"></TextBlock>
+                <TextBlock x:Name="txtAlarm" Text="" Margin="10,15,0,0"></TextBlock>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="158*" />
+                <ColumnDefinition Width="637*" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btnPreviewSound" Content="Play" Margin="10,10,113,10" Click="btnPreviewSound_Click"></Button>
+            <Button x:Name="btnReload" Content="Reload" Margin="50,10,63,10" Click="btnReload_Click"></Button>
+            <Button x:Name="BtnAck" Margin="292,10,10,10" Content="ACK" Click="BtnAck_Click" Grid.Column="1"></Button>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+            <TreeView x:Name="trvServer" ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.IsDeferredScrollingEnabled="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="False" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type model:Server}" ItemsSource="{Binding detail}">
+                        <Border BorderThickness="{Binding thickness, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding color, UpdateSourceTrigger=PropertyChanged}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text=" " />
+                                <TextBlock Text="(" />
+                                <TextBlock Text="{Binding ip, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text=") - bps (" />
+                                <TextBlock Text="{Binding bps, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text=") Mbps" />
+                            </StackPanel>
+                        </Border>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate  DataType="{x:Type model:Detail}">
+                        <Border BorderThickness="{Binding thickness, UpdateSourceTrigger=PropertyChanged}" BorderBrush="{Binding color, UpdateSourceTrigger=PropertyChanged}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text="(" />
+                                <TextBlock Text="{Binding profile_name, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text=") - variance (" />
+                                <TextBlock Text="{Binding variance, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text=")" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </Grid>
+        <Grid  Grid.Row="1" Grid.Column="1">
+            <ListView x:Name="LvActive" VerticalContentAlignment="Top"
+                      ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.IsDeferredScrollingEnabled="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Time" Width="125" DisplayMemberBinding="{Binding StartAt}" />
+                        <GridViewColumn Header="IP" Width="80" DisplayMemberBinding="{Binding ip}" />
+                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding name}" />
+                        <GridViewColumn Header="Log" Width="Auto" DisplayMemberBinding="{Binding value}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <Grid  Grid.Row="2" Grid.Column="1">
+            <ListView x:Name="LvHistory" VerticalContentAlignment="Top"
+                      ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.IsDeferredScrollingEnabled="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Time" Width="125" DisplayMemberBinding="{Binding StartAt}" />
+                        <GridViewColumn Header="IP" Width="80" DisplayMemberBinding="{Binding ip}" />
+                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding name}" />
+                        <GridViewColumn Header="Log" Width="Auto" DisplayMemberBinding="{Binding value}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</Window>
