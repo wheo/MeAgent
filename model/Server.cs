@@ -153,8 +153,6 @@ namespace MeAgent.model
             using (MySqlConnection conn = new MySqlConnection(DataBaseManager.getInstance().ConnectionString))
             {
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand(query, conn);
-                cmd.Prepare();
                 MySqlDataAdapter adpt = new MySqlDataAdapter(query, conn);
                 adpt.Fill(dt);
             }
@@ -199,7 +197,6 @@ namespace MeAgent.model
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand(query, conn);
                 MySqlDataAdapter adpt = new MySqlDataAdapter(query, conn);
                 adpt.Fill(dt);
             }

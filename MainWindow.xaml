@@ -9,6 +9,7 @@
         Title="MeAgent" Height="1000" Width="1200"
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
@@ -34,6 +35,7 @@
             </Grid.ColumnDefinitions>
             <Button x:Name="btnPreviewSound" Content="Play" Margin="10,10,113,10" Click="btnPreviewSound_Click"></Button>
             <Button x:Name="btnReload" Content="Reload" Margin="50,10,63,10" Click="btnReload_Click"></Button>
+            <Button x:Name="btnToggleAlarm" Content="Alarm ON" Background="Red" Foreground="White" Margin="100,10,607,10" Click="btnToggleAlarm_Click" Grid.ColumnSpan="2" Style="{DynamicResource BtnMouseOverDisable}" ></Button>
             <Button x:Name="BtnAck" Margin="292,10,10,10" Content="ACK" Click="BtnAck_Click" Grid.Column="1"></Button>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
@@ -76,36 +78,42 @@
             </TreeView>
         </Grid>
         <Grid  Grid.Row="1" Grid.Column="1">
-            <ListView x:Name="LvActive" VerticalContentAlignment="Top"
+            <StackPanel Orientation="Vertical">
+                <TextBox Text="Active"></TextBox>
+                <ListView x:Name="LvActive" VerticalContentAlignment="Top"
                       ScrollViewer.CanContentScroll="True"
                       ScrollViewer.IsDeferredScrollingEnabled="True"
                       ScrollViewer.VerticalScrollBarVisibility="Visible"
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Time" Width="125" DisplayMemberBinding="{Binding StartAt}" />
-                        <GridViewColumn Header="IP" Width="80" DisplayMemberBinding="{Binding ip}" />
-                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding name}" />
-                        <GridViewColumn Header="Log" Width="Auto" DisplayMemberBinding="{Binding value}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Time" Width="125" DisplayMemberBinding="{Binding StartAt}" />
+                            <GridViewColumn Header="IP" Width="80" DisplayMemberBinding="{Binding ip}" />
+                            <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding name}" />
+                            <GridViewColumn Header="Log" Width="Auto" DisplayMemberBinding="{Binding value}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
         </Grid>
         <Grid  Grid.Row="2" Grid.Column="1">
-            <ListView x:Name="LvHistory" VerticalContentAlignment="Top"
+            <StackPanel Orientation="Vertical">
+                <TextBox Text="History"></TextBox>
+                <ListView x:Name="LvHistory" VerticalContentAlignment="Top"
                       ScrollViewer.CanContentScroll="True"
                       ScrollViewer.IsDeferredScrollingEnabled="True"
                       ScrollViewer.VerticalScrollBarVisibility="Visible"
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Time" Width="125" DisplayMemberBinding="{Binding StartAt}" />
-                        <GridViewColumn Header="IP" Width="80" DisplayMemberBinding="{Binding ip}" />
-                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding name}" />
-                        <GridViewColumn Header="Log" Width="Auto" DisplayMemberBinding="{Binding value}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Time" Width="125" DisplayMemberBinding="{Binding StartAt}" />
+                            <GridViewColumn Header="IP" Width="80" DisplayMemberBinding="{Binding ip}" />
+                            <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding name}" />
+                            <GridViewColumn Header="Log" Width="Auto" DisplayMemberBinding="{Binding value}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

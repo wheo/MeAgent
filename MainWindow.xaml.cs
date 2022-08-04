@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using Microsoft.Win32;
 using System.Media;
 using System.Drawing;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace MeAgent
 {
@@ -38,14 +39,15 @@ namespace MeAgent
         private Settings _settings = null;
         private SoundPlayer _soundPlayer = null;
 
+        private bool _alarm = true;
+
         public MainWindow()
         {
             InitializeComponent();
             LoadConfig();
             //Refresh();
-            Binding();
+
             _isAlive = true;
-            DispatcherTimer();
         }
 
         private bool LoadConfig()
@@ -192,101 +194,46 @@ namespace MeAgent
                 {
                     newestDetail = server.GetDetail();
                     server.bps = newestDetail.Sum(x => x.bps);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex.ToString());
-                }
 
-                if (server.throughput >= server.bps)
-                {
-                    if (server.status == (int)Server.EnumStatus.working)
-                    {
-                        server.errorCounter++;
-                        logger.Info(string.Format($"({server.name}) status({((Server.EnumStatus)server.status).ToString()} ({server.throughput})Mbps e_cnt({server.errorCounter}))"));
-                    }
-                    if (!server.isDanger && server.errorCounter > _settings.limit_error_count)
-                    {
-                        server.isDanger = true;
-                        server.color = "Red";
-                        server.thickness = 4;
-                        server.GetLog().ip = server.ip;
-                        server.GetLog().name = server.name;
-                        server.GetLog().value = string.Format($"({server.bps}) throughput is danger !!!");
-                        ViewMoodel.GetInstance().activeLogs.Add(server.GetLog());
-                        logger.Info(string.Format($"(begin)({server.ip})({server.name}) status({((Server.EnumStatus)server.status).ToString()}) ({server.throughput})Mbps e_cnt({server.errorCounter}))"));
-
-                        PlaySound();
-                    }
-                }
-                else
-                {
-                    if (server.isDanger)
-                    {
-                        server.isDanger = false;
-                        server.errorCounter = 0;
-                        ViewMoodel.GetInstance().activeLogs.Remove(server.GetLog());
-                        //ViewMoodel.GetInstance().historyLogs.Insert(0, server.GetLog());
-                        ViewMoodel.GetInstance().historyLogs.InsertItem(0, server.GetLog());
-                        server.ClearLog();
-                        logger.Info(string.Format($"(end)({server.ip})({server.name}) status({((Server.EnumStatus)server.status).ToString()}) ({server.throughput})Mbps e_cnt({server.errorCounter}))"));
-                    }
-                    if (server.detail.Count(x => x.isDanger == true) == 0)
-                    {
-                        //서버의 모든 이슈가 해소 되었을 때
-                        server.color = "";
-                        server.thickness = 0;
-                    }
-                    else
-                    {
-                        server.color = "Yellow";
-                        server.thickness = 2;
-                    }
-                }
-                for (int j = 0; j < server.detail.Count(); j++)
-                {
-                    server.detail[j].name = newestDetail[j].name;
-                    server.detail[j].profile_name = newestDetail[j].profile_name;
-                    server.detail[j].variance = newestDetail[j].variance;
-
-                    if (server.detail[j].variance <= _settings.min_variance)
+                    if (server.throughput >= server.bps)
                     {
                         if (server.status == (int)Server.EnumStatus.working)
                         {
-                            server.detail[j].errorCounter++;
-                            logger.Info(string.Format($"({server.name})-({server.detail[j].profile_name}) status({((Server.EnumStatus)server.status).ToString()}) variance({server.detail[j].variance}) e_cnt({server.detail[j].errorCounter}))"));
+                            server.errorCounter++;
+                            logger.Info(string.Format($"({server.name}) status({((Server.EnumStatus)server.status).ToString()} ({server.throughput})Mbps e_cnt({server.errorCounter}))"));
                         }
-
-                        if (!server.detail[j].isDanger && server.detail[j].errorCounter > _settings.limit_error_count)
+                        if (!server.isDanger && server.errorCounter > _settings.limit_error_count)
                         {
-                            server.detail[j].isDanger = true;
-                            server.detail[j].color = "Red";
-                            server.detail[j].thickness = 4;
-                            server.detail[j].GetLog().ip = server.ip;
-                            server.detail[j].GetLog().name = server.detail[j].profile_name;
-                            server.detail[j].GetLog().value = string.Format($"({server.name}-{server.detail[j].name}) ({server.detail[j].variance}) variance is danger !!!");
-                            logger.Info(string.Format($"(begin)({server.ip})({server.name})-({server.detail[j].profile_name}) status({((Server.EnumStatus)server.status).ToString()}) variance({server.detail[j].variance}) e_cnt({server.detail[j].errorCounter}))"));
-                            ViewMoodel.GetInstance().activeLogs.Add(server.detail[j].GetLog());
-                            // 알람
-                            PlaySound();
+                            server.isDanger = true;
+                            server.color = "Red";
+                            server.thickness = 4;
+                            server.GetLog().ip = server.ip;
+                            server.GetLog().name = server.name;
+                            server.GetLog().value = string.Format($"({server.bps}) throughput is danger !!!");
+                            ViewMoodel.GetInstance().activeLogs.Add(server.GetLog());
+                            logger.Info(string.Format($"(begin)({server.ip})({server.name}) status({((Server.EnumStatus)server.status).ToString()}) ({server.throughput})Mbps e_cnt({server.errorCounter}))"));
+
+                            if (_alarm)
+                            {
+                                PlaySound();
+                            }
                         }
                     }
                     else
                     {
-                        if (server.detail[j].isDanger)
+                        if (server.isDanger)
                         {
-                            server.detail[j].isDanger = false;
-                            server.detail[j].errorCounter = 0;
-                            ViewMoodel.GetInstance().activeLogs.Remove(server.detail[j].GetLog());
-                            ViewMoodel.GetInstance().historyLogs.InsertItem(0, server.detail[j].GetLog());
-                            server.detail[j].ClearLog();
-                            logger.Info(string.Format($"(end)({server.ip})({server.name})-({server.detail[j].profile_name}) status({((Server.EnumStatus)server.status).ToString()}) variance({server.detail[j].variance}) e_cnt({server.detail[j].errorCounter}))"));
+                            server.isDanger = false;
+                            server.errorCounter = 0;
+                            ViewMoodel.GetInstance().activeLogs.Remove(server.GetLog());
+                            //ViewMoodel.GetInstance().historyLogs.Insert(0, server.GetLog());
+                            ViewMoodel.GetInstance().historyLogs.InsertItem(0, server.GetLog());
+                            server.ClearLog();
+                            logger.Info(string.Format($"(end)({server.ip})({server.name}) status({((Server.EnumStatus)server.status).ToString()}) ({server.throughput})Mbps e_cnt({server.errorCounter}))"));
                         }
-                        server.detail[j].color = "";
-                        server.detail[j].thickness = 0;
                         if (server.detail.Count(x => x.isDanger == true) == 0)
                         {
-                            //모든 서버의 이슈가 해소 되었을 때
+                            //서버의 모든 이슈가 해소 되었을 때
                             server.color = "";
                             server.thickness = 0;
                         }
@@ -296,12 +243,75 @@ namespace MeAgent
                             server.thickness = 2;
                         }
                     }
+                    for (int j = 0; j < server.detail.Count(); j++)
+                    {
+                        server.detail[j].name = newestDetail[j].name;
+                        server.detail[j].profile_name = newestDetail[j].profile_name;
+                        server.detail[j].variance = newestDetail[j].variance;
+
+                        if (server.detail[j].variance <= _settings.min_variance)
+                        {
+                            if (server.status == (int)Server.EnumStatus.working)
+                            {
+                                server.detail[j].errorCounter++;
+                                logger.Info(string.Format($"({server.name})-({server.detail[j].profile_name}) status({((Server.EnumStatus)server.status).ToString()}) variance({server.detail[j].variance}) e_cnt({server.detail[j].errorCounter}))"));
+                            }
+
+                            if (!server.detail[j].isDanger && server.detail[j].errorCounter > _settings.limit_error_count)
+                            {
+                                server.detail[j].isDanger = true;
+                                server.detail[j].color = "Red";
+                                server.detail[j].thickness = 4;
+                                server.detail[j].GetLog().ip = server.ip;
+                                server.detail[j].GetLog().name = server.detail[j].profile_name;
+                                server.detail[j].GetLog().value = string.Format($"({server.name}-{server.detail[j].name}) ({server.detail[j].variance}) variance is danger !!!");
+                                logger.Info(string.Format($"(begin)({server.ip})({server.name})-({server.detail[j].profile_name}) status({((Server.EnumStatus)server.status).ToString()}) variance({server.detail[j].variance}) e_cnt({server.detail[j].errorCounter}))"));
+                                ViewMoodel.GetInstance().activeLogs.Add(server.detail[j].GetLog());
+                                // 알람
+                                if (_alarm)
+                                {
+                                    PlaySound();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (server.detail[j].isDanger)
+                            {
+                                server.detail[j].isDanger = false;
+                                server.detail[j].errorCounter = 0;
+                                ViewMoodel.GetInstance().activeLogs.Remove(server.detail[j].GetLog());
+                                ViewMoodel.GetInstance().historyLogs.InsertItem(0, server.detail[j].GetLog());
+                                server.detail[j].ClearLog();
+                                logger.Info(string.Format($"(end)({server.ip})({server.name})-({server.detail[j].profile_name}) status({((Server.EnumStatus)server.status).ToString()}) variance({server.detail[j].variance}) e_cnt({server.detail[j].errorCounter}))"));
+                            }
+                            server.detail[j].color = "";
+                            server.detail[j].thickness = 0;
+                            if (server.detail.Count(x => x.isDanger == true) == 0)
+                            {
+                                //모든 서버의 이슈가 해소 되었을 때
+                                server.color = "";
+                                server.thickness = 0;
+                            }
+                            else
+                            {
+                                server.color = "Yellow";
+                                server.thickness = 2;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex.ToString());
                 }
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Binding();
+            DispatcherTimer();
         }
 
         private void BtnAck_Click(object sender, RoutedEventArgs e)
@@ -401,6 +411,22 @@ namespace MeAgent
             ViewMoodel.GetInstance().activeLogs = null;
             ViewMoodel.GetInstance().historyLogs.Clear();
             ViewMoodel.GetInstance().historyLogs = null;
+        }
+
+        private void btnToggleAlarm_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            _alarm = !_alarm;
+            if (_alarm)
+            {
+                btn.Content = "Alarm ON";
+                btn.Background = Brushes.Red;
+            }
+            else
+            {
+                btn.Content = "Alarm OFF";
+                btn.Background = Brushes.Blue;
+            }
         }
     }
 }

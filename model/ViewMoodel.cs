@@ -19,12 +19,8 @@ namespace MeAgent.global
             if (historyLogs == null)
             {
                 historyLogs = new LimitedSizeObservableCollection<Logitem>(1000);
-                return historyLogs;
             }
-            else
-            {
-                return historyLogs;
-            }
+            return historyLogs;
         }
 
         public ObservableCollection<Logitem> GetActiveLogs()
@@ -32,12 +28,8 @@ namespace MeAgent.global
             if (activeLogs == null)
             {
                 activeLogs = new ObservableCollection<Logitem>();
-                return activeLogs;
             }
-            else
-            {
-                return activeLogs;
-            }
+            return activeLogs;
         }
 
         public class LimitedSizeObservableCollection<T> : ObservableCollection<T>
