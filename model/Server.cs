@@ -38,7 +38,24 @@ namespace MeAgent.model
 
         public bool isDanger { get; set; } = false;
 
+        public bool isFreeze { get; set; } = false;
+
         public UInt16 errorCounter { get; set; }
+
+        private UInt16 _freeze_varianceCounter;
+
+        public UInt16 freeze_varianceCounter
+        {
+            get { return _freeze_varianceCounter; }
+            set
+            {
+                if (this._freeze_varianceCounter != value)
+                {
+                    this._freeze_varianceCounter = value;
+                    OnPropertyChanged(new PropertyChangedEventArgs("freeze_varianceCounter"));
+                }
+            }
+        }
 
         private string _color;
 

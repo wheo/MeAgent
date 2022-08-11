@@ -17,6 +17,8 @@ namespace MeAgent.model
 
         private Logitem log { get; set; }
 
+        public bool changed { get; set; } = true;
+
         public Logitem GetLog()
         {
             if (log == null)

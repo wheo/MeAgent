@@ -25,6 +25,8 @@ namespace MeAgent.config
 
         public int limit_error_count { get; set; } = 30;
 
+        public int group_limit_variance_freeze_sec { get; set; } = 120;
+
         public String configFileName { get; } = "config.json";
 
         public void Save()

@@ -56,9 +56,12 @@
                                 <TextBlock Text=" " />
                                 <TextBlock Text="(" />
                                 <TextBlock Text="{Binding ip, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Text=") - bps (" />
+                                <TextBlock Text=") - (" />
                                 <TextBlock Text="{Binding bps, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Text=") Mbps" />
+                                <TextBlock Text=" - vc (" />
+                                <TextBlock Text="{Binding freeze_varianceCounter, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text=")" />
                             </StackPanel>
                         </Border>
                     </HierarchicalDataTemplate>
